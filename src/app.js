@@ -36,9 +36,16 @@ app.post('/', (req, res) => {
 
     //Reach to impressions
     const reachToImpressions = [];
-    //push audiences
-    console.log(MetricsHelper.generateAudiences(sortedCampaigns));
+    //push audiences ex: [{diamonds: []}, {USA: []}]
+    const audienceList = MetricsHelper.generateAudiences(sortedCampaigns);
+    for (let audience of audienceList) {
+        const audienceObj = { [audience]: [] };
+        reachToImpressions.push(audienceObj)
+    };
 
+    //push ctaTypes ex [{diamonds: []}, {USA: []}]
+    console.log(reachToImpressions)
+    
     //console.log(req.body);
     return res.send(req.body);
 });
