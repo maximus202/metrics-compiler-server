@@ -23,7 +23,6 @@ app.post('/', (req, res) => {
     //Assign final values to variables
     //Assign variables to an object that will be sent in request
 
-
     //Convert date strings to actual dates
     const campaigns = req.body;
     campaigns.map(campaign => campaign.campaignDate = new Date(campaign.campaignDate));
@@ -33,21 +32,23 @@ app.post('/', (req, res) => {
         return a.campaignDate - b.campaignDate
     });
     
+    //Generate Metrics Report
+    const metricsReport = MetricsHelper.generateAudiences(sortedCampaigns);
 
-    //Reach to impressions
-    const reachToImpressions = [];
-    //push audiences ex: [{diamonds: []}, {USA: []}]
-    const audienceList = MetricsHelper.generateAudiences(sortedCampaigns);
-    for (let audience of audienceList) {
-        const audienceObj = { [audience]: [] };
-        reachToImpressions.push(audienceObj)
-    };
+    //Generate Overview Stats
+    //Average engagement for the last 7 days starting from latest campaign date
 
-    //push ctaTypes ex [{diamonds: []}, {USA: []}]
-    console.log(reachToImpressions)
-    
-    //console.log(req.body);
-    return res.send(req.body);
+    /*const overview = {
+        averageEngagementLast7Days: '4.72%',
+        averageEngagementOverall: '4.90%',
+        averageClicksLast7Days: '2.10%',
+        averageClicksOverall: '2%',
+        averageUnsubscribeLast7Days: '1%',
+        averageUnsubscribeOverall: '1.20%',
+        revenueLast7Days: '$832,000'
+    },*/
+
+    return res.send(metricsReport);
 });
 
 app.use(function errorHandler(error, req, res, next) {
