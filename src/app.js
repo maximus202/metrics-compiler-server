@@ -36,19 +36,14 @@ app.post('/', (req, res) => {
     const metricsReport = MetricsHelper.generateAudiences(sortedCampaigns);
 
     //Generate Overview Stats
-    //Average engagement for the last 7 days starting from latest campaign date
+    const overviewReport = MetricsHelper.calculateAvgEngagementAll(metricsReport);
+    
+    const compiledReport = {
+        overview: overviewReport,
+        metricsReport: metricsReport
+    };
 
-    /*const overview = {
-        averageEngagementLast7Days: '4.72%',
-        averageEngagementOverall: '4.90%',
-        averageClicksLast7Days: '2.10%',
-        averageClicksOverall: '2%',
-        averageUnsubscribeLast7Days: '1%',
-        averageUnsubscribeOverall: '1.20%',
-        revenueLast7Days: '$832,000'
-    },*/
-
-    return res.send(metricsReport);
+    return res.send(compiledReport);
 });
 
 app.use(function errorHandler(error, req, res, next) {

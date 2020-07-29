@@ -23,11 +23,11 @@ const MetricsHelper = {
             const ctaType = campaign.ctaType;
             if (campaign.audience === audience && !ctaTypesList.includes(ctaType)) {
                 const ctaItem = this.generateMetrics(ctaType, audience, sortedCampaigns);
-                metricsByCta.push({ctaItem});
+                metricsByCta.push({ ctaItem });
                 ctaTypesList.push(ctaType);
             }
         }
-        
+
         return metricsByCta;
     },
 
@@ -60,6 +60,66 @@ const MetricsHelper = {
         }
 
         return groupMetrics;
+    },
+
+    calculateAvgEngagementAll(metricsReport) {
+        const allEngagementValues = [];
+        const lastSevenDaysEngagementValues = [];
+        const allClickValues = [];
+        const lastSevenDaysClickValues = [];
+        const allUnsubscribeValues = [];
+        const lastSevenDaysUnsubscribeValues = [];
+        const allRevenueValues = [];
+        const lastSevenDaysRevenueValues = [];
+
+        const today = new Date();
+        const sevenDaysAgo = new Date(today);
+        sevenDaysAgo.setDate(today.getDate() - 6);
+
+        for (let audience in metricsReport) {
+            const audienceItem = metricsReport[audience].audienceItem;
+            for (let cta in audienceItem) {
+                const ctaItem = audienceItem[cta]
+                for (let ctaCampaigns in ctaItem) {
+                    const campaigns = ctaItem[ctaCampaigns]
+                    campaigns.map(campaignItem => {
+                        console.log(campaignItem)
+                        const campaignDate = campaignItem.date;
+
+                        allEngagementValues.push(campaignItem.impressionRate);
+                        allClickValues.push(campaignItem.clickThroughRate);
+                        allUnsubscribeValues.push(campaignItem.unsubscribeRate);
+                        allRevenueValues.push(campaignItem.revenue);
+                        if (campaignDate < today && campaignDate > sevenDaysAgo) {
+                            lastSevenDaysEngagementValues.push(campaignItem.impressionRate);
+                            lastSevenDaysClickValues.push(campaignItem.clickThroughRate);
+                            lastSevenDaysUnsubscribeValues.push(campaignItem.unsubscribeRate);
+                            lastSevenDaysRevenueValues.push(campaignItem.revenue);
+                        };
+                    });
+                };
+            };
+        };
+
+        const allEngagementAvg = allEngagementValues.reduce((a, b) => a + b) / allEngagementValues.length;
+        const sevenDaysEngagementAvg = lastSevenDaysEngagementValues.reduce((a, b) => a + b) / lastSevenDaysEngagementValues.length;
+        const allClickAvg = allClickValues.reduce((a, b) => a + b) / allClickValues.length;
+        const sevenDaysClickAvg = lastSevenDaysClickValues.reduce((a, b) => a + b) / lastSevenDaysClickValues.length;
+        const allUnsubscribeAvg = allUnsubscribeValues.reduce((a, b) => a + b) / allUnsubscribeValues.length;
+        const sevenDaysUnsubscribeAvg = lastSevenDaysUnsubscribeValues.reduce((a, b) => a + b) / lastSevenDaysUnsubscribeValues.length;
+        const sevenDaysRevenueSum = lastSevenDaysRevenueValues.reduce((a, b) => a + b);
+
+        const overviewObj = {
+            allEngagementAvg: allEngagementAvg,
+            sevenDaysEngagementAvg: sevenDaysEngagementAvg,
+            allClickAvg: allClickAvg,
+            sevenDaysClickAvg: sevenDaysClickAvg,
+            allUnsubscribeAvg: allUnsubscribeAvg,
+            sevenDaysUnsubscribeAvg: sevenDaysUnsubscribeAvg,
+            sevenDaysRevenueSum: sevenDaysRevenueSum,
+        };
+
+        return overviewObj;
     }
 };
 
