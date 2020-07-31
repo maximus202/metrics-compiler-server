@@ -83,31 +83,81 @@ const MetricsHelper = {
                 for (let ctaCampaigns in ctaItem) {
                     const campaigns = ctaItem[ctaCampaigns]
                     campaigns.map(campaignItem => {
-                        console.log(campaignItem)
                         const campaignDate = campaignItem.date;
 
-                        allEngagementValues.push(campaignItem.impressionRate);
-                        allClickValues.push(campaignItem.clickThroughRate);
-                        allUnsubscribeValues.push(campaignItem.unsubscribeRate);
-                        allRevenueValues.push(campaignItem.revenue);
+                        if (campaignItem.impressionRate) {
+                            allEngagementValues.push(campaignItem.impressionRate);
+                        }
+
+                        if (campaignItem.clickThroughRate) {
+                            allClickValues.push(campaignItem.clickThroughRate);
+                        }
+
+                        if (campaignItem.unsubscribeRate) {
+                            allUnsubscribeValues.push(campaignItem.unsubscribeRate);
+                        }
+
+                        if (campaignItem.revenue) {
+                            allRevenueValues.push(campaignItem.revenue);
+                        }
+                        
                         if (campaignDate < today && campaignDate > sevenDaysAgo) {
-                            lastSevenDaysEngagementValues.push(campaignItem.impressionRate);
-                            lastSevenDaysClickValues.push(campaignItem.clickThroughRate);
-                            lastSevenDaysUnsubscribeValues.push(campaignItem.unsubscribeRate);
-                            lastSevenDaysRevenueValues.push(campaignItem.revenue);
+                            if (campaignItem.impressionRate) {
+                                lastSevenDaysEngagementValues.push(campaignItem.impressionRate);
+                            }
+                            
+                            if (campaignItem.clickThroughRate) {
+                                lastSevenDaysClickValues.push(campaignItem.clickThroughRate);
+                            }
+
+                            if (campaignItem.unsubscribeRate) {
+                                lastSevenDaysUnsubscribeValues.push(campaignItem.unsubscribeRate);
+                            }
+                            
+                            if (campaignItem.revenue) {
+                                lastSevenDaysRevenueValues.push(campaignItem.revenue);
+                            }
                         };
                     });
                 };
             };
         };
 
-        const allEngagementAvg = allEngagementValues.reduce((a, b) => a + b) / allEngagementValues.length;
-        const sevenDaysEngagementAvg = lastSevenDaysEngagementValues.reduce((a, b) => a + b) / lastSevenDaysEngagementValues.length;
-        const allClickAvg = allClickValues.reduce((a, b) => a + b) / allClickValues.length;
-        const sevenDaysClickAvg = lastSevenDaysClickValues.reduce((a, b) => a + b) / lastSevenDaysClickValues.length;
-        const allUnsubscribeAvg = allUnsubscribeValues.reduce((a, b) => a + b) / allUnsubscribeValues.length;
-        const sevenDaysUnsubscribeAvg = lastSevenDaysUnsubscribeValues.reduce((a, b) => a + b) / lastSevenDaysUnsubscribeValues.length;
-        const sevenDaysRevenueSum = lastSevenDaysRevenueValues.reduce((a, b) => a + b);
+        let allEngagementAvg = null;
+        let sevenDaysEngagementAvg = null;
+        let allClickAvg = null;
+        let sevenDaysClickAvg = null;
+        let allUnsubscribeAvg = null;
+        let sevenDaysUnsubscribeAvg = null;
+        let sevenDaysRevenueSum = null;
+
+        if (allEngagementValues.length > 0) {
+            allEngagementAvg = allEngagementValues.reduce((a, b) => a + b) / allEngagementValues.length;
+        }
+        
+        if (lastSevenDaysEngagementValues.length > 0) {
+            sevenDaysEngagementAvg = lastSevenDaysEngagementValues.reduce((a, b) => a + b) / lastSevenDaysEngagementValues.length;
+        }
+
+        if (allClickValues.length > 0) {
+            allClickAvg = allClickValues.reduce((a, b) => a + b) / allClickValues.length;
+        }
+        
+        if (lastSevenDaysClickValues.length > 0) {
+            sevenDaysClickAvg = lastSevenDaysClickValues.reduce((a, b) => a + b) / lastSevenDaysClickValues.length;
+        }
+
+        if (allUnsubscribeValues.length > 0) {
+            allUnsubscribeAvg = allUnsubscribeValues.reduce((a, b) => a + b) / allUnsubscribeValues.length;
+        }
+        
+        if (lastSevenDaysUnsubscribeValues.length > 0) {
+            sevenDaysUnsubscribeAvg = lastSevenDaysUnsubscribeValues.reduce((a, b) => a + b) / lastSevenDaysUnsubscribeValues.length;
+        }
+        
+        if (lastSevenDaysRevenueValues.length > 0) {
+            sevenDaysRevenueSum = lastSevenDaysRevenueValues.reduce((a, b) => a + b);
+        }
 
         const overviewObj = {
             allEngagementAvg: allEngagementAvg,
